@@ -43,21 +43,21 @@ Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod 
 <!-- PREREQUISITES -->
 ## Prerequisites
 
-### Install Docker and Docker Compose
+### 1. Install Docker and Docker Compose
 
-#### 1. Update and Upgrade
+#### 1.1. Update and Upgrade
 First of all make sure that the system runs the latest version of the software. Run the command:
 ```bash
 sudo apt-get update && sudo apt-get upgrade
 ```
 
-#### 2. Install Docker
+#### 1.2. Install Docker
 Now is time to install Docker! Fortunately, Docker provides a handy install script for that, just run:
 ```bash
 curl -fsSL test.docker.com -o get-docker.sh && sh get-docker.sh
 ```
 
-#### 3. Add a Non-Root User to Docker Group
+#### 1.3. Add a Non-Root User to Docker Group
 By default, only users who have administrative privileges (root users) can run containers. If you are not logged in as the root, one option is to use the sudo prefix. However, you could also add your non-root user to the Docker group which will allow it to execute docker commands. The syntax for adding users to the Docker group is:
 
 ```bash
@@ -78,7 +78,7 @@ groups ${USER}
 
 Reboot your system to let the changes take effect.
 
-#### 4. Install Docker-Compose
+#### 1.4. Install Docker-Compose
 Docker-Compose usually gets installed using pip3. For that, we need to have python3 and pip3 installed. If you don't have it installed, you can run the following commands:
 
 Removing old Python versions:
@@ -96,14 +96,14 @@ sudo apt-get install -y libffi-dev libssl-dev
 sudo apt install -y python3.10-dev
 sudo apt-get install -y python3.10 python3-pip
 ```
-c
+
 Once python3 and pip3 are installed, we can install Docker-Compose using the following command:
 
 ```bash
 sudo pip3 install docker-compose
 ```
 
-#### 5. Enable the Docker system service to start your containers on boot
+#### 1.5. Enable the Docker system service to start your containers on boot
 This is a very nice and important addition. With the following command you can configure your system to automatically run the Docker system service, whenever it boots up.
 
 ```bash
@@ -111,7 +111,7 @@ sudo systemctl enable docker
 ```
 With this in place, containers with a restart policy set to always or unless-stopped will be re-started automatically after a reboot.
 
-#### 5.a For WSL users: Enable Docker system start at startup
+#### 1.5.a For WSL users: Enable Docker system start at startup
 WSL does not know `systemctl`, so we have to use a different approach to make docker run at startup. Open `~/.profile` and add the following section at the end of the file:
 
 ```bash
@@ -121,7 +121,7 @@ if service docker status 2>&1 | grep -q "is not running"; then
 fi
 ```
 
-#### 6. Run Hello World Container
+#### 1.6. Run Hello World Container
 The best way to test whether Docker has been set up correctly is to run the Hello World container.
 To do so, type in the following command:
 
@@ -135,7 +135,7 @@ Once it goes through all the steps, the output should inform you that your insta
 docker version
 ```
 
-#### 7. Check Docker Compose Installation
+#### 1.7. Check Docker Compose Installation
 Last but not least, check if Docker Compose is working correctly. To do so, create a file named `docker-compose.yml` and fill it with this content:
 
 ```yml
@@ -150,6 +150,23 @@ Then run this hello-world container from the created docker-compose file:
 ```bash
 docker-compose up
 ```
+
+### 2. Set A Record 
+
+#### 2.1 Get IP of your machine
+
+Get your IPv4 address by visiting [this site](https://whatismyipaddress.com/) or running `curl ifconfig.me`
+
+#### 2.2 Go to your domain vendor and set the A record for your (sub)domain to your local IP
+
+This setting will redirect the call to the domain in a browser or similar to the IP you got earlier. If you are running vaultwarden on a server in your home network, make sure you have port forwarding set for the server's IP and ports 80 and 443. Otherwise your server will only be accessible within your network. Some ISPs do not provide customers with a IPv4 address. It is required for this setup. However, many of these providers offer one upon request.
+
+#### 2.3 Setup DynDNS for your machine
+
+It is not very common for ISPs to offer a fixed IPv4 address. This means that this address is changed at regular intervals. This can happen, for example, when the router is restarted. This means that the A record at your domain provider is no longer valid and is not routed correctly. Therefore we have to ask regularly for the current IPv4 address and renew it at the domain provider. Many of these providers offer an API for this. 
+
+To automate this process you can for example write your own Python script that sends the required HTTP request in case of a change. You can find a simple example in this repo (`/etc/update_dyndns.py`). For privacy reasons I have commented the crucial function only schematically. Here you have to adapt the HTTP request to the API interface of your domain provider.
+
 
 <!-- INSTALLATION -->
 ## Installation
