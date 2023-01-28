@@ -191,7 +191,7 @@ Your vaultwarden is up and running and accessible? Great! But I recommend you to
 - Tresor-Timeout: immediately
 - Action when Tresor Timeout: lock
 - Activate 2FA
-- Clear clipboard: 20 seconds
+- Clear clipboard: `20` seconds
 
 For the very paranoid: Set `WEB_VAULT_ENABLED` to `false` in the `docker-compose.yml` file and restart the container. This will disable login via a browser. If the subsequent 404 response bugs you, you can also provide your own index.html via `WEB_VAULT_FOLDER`. This will be displayed instead. Make sure you rebuild your container after changing docker environment variables. Just run: `docker-compose up --force-recreate`. While we're at it: Did you set `WEB_VAULT_ENABLED` to `false`? You'd better do it.
 
