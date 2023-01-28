@@ -5,7 +5,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <img src="logo.svg" alt="Logo" width="150">
+  <img src="img/logo.svg" alt="Logo" width="150">
   <h3 align="center">docker-nginx-vaultwarden-ssl</h3>
   <br />
   <p align="center">

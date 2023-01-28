@@ -3,3 +3,5 @@ docker-compose.hello-world.yml
 test.txt
 print.sh
 *crontab
+*dyndns.log*
+.vscode
