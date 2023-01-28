@@ -136,7 +136,7 @@ docker version
 ```
 
 #### 1.7. Check Docker Compose Installation
-Last but not least, check if Docker Compose is working correctly. To do so, create a file named `docker-compose.yml` and fill it with this content:
+Last but not least, check if Docker Compose is working correctly. To do so, create a file named `docker-compose.helloworld.yml` and fill it with this content:
 
 ```yml
 version: '3'
@@ -148,7 +148,7 @@ services:
 Then run this hello-world container from the created docker-compose file:
 
 ```bash
-docker-compose up
+docker-compose -f docker-compose.helloworld.yml up
 ```
 
 ### 2. Set A Record 

@@ -1,0 +1,60 @@
+version: '3'
+
+services:
+  vaultwarden:
+    image: vaultwarden/server:latest
+    container_name: vaultwarden
+    restart: always
+    environment:
+      # See all current env vars: https://github.com/dani-garcia/vaultwarden/blob/main/.env.template
+      WEBSOCKET_ENABLED: "true"           # Enables websocket notifications
+      WEB_VAULT_ENABLED: "true"           # Make your vault accessible via any browser
+      WEB_VAULT_FOLDER: "web-vault/"      # Set folder of web-vault. In case of WEB_VAULT_ENABLED=false, you could serve a html file
+      SEND_PURGE_SCHEDULE: "0 5 * * * *"  # Cron schedule of the job that checks for Sends past their deletion date.
+      TRASH_PURGE_SCHEDULE: "0 5 0 * * *" # Cron schedule of the job that checks for trashed items to delete permanently.
+      EXTENDED_LOGGING: "true"            # Enable extended logging, which shows timestamps and targets in the logs
+      SIGNUPS_ALLOWED: "true"            # Controls if new users can register
+      INVITATIONS_ALLOWED: "false"        # Invitations org admins to invite users, even when signups are disabled
+      SHOW_PASSWORD_HINT: "false"         # Controls whether a password hint should be shown directly in the web page if
+      LOGIN_RATELIMIT_SECONDS: "60"       # Number of seconds, on average, between login requests from the same IP address before rate limiting kicks in.
+      LOGIN_RATELIMIT_MAX_BURST: "10"     # Allow a burst of requests of up to this size, while maintaining the average indicated by `LOGIN_RATELIMIT_SECONDS`
+      SMTP_ACCEPT_INVALID_CERTS: "false"  # Accept Invalid Certificates
+    volumes:
+      - ./vw-data:/data
+    networks:
+      - vault_nginx
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    restart: always
+    environment:
+      - DOMAIN
+    volumes:
+      - ./etc/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./etc/letsencrypt:/etc/letsencrypt:ro
+      - ./certbot/data:/var/www/certbot
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - vault_nginx
+
+  certbot:
+    container_name: certbot
+    image: certbot/certbot:arm32v6-latest
+    #restart: always
+    depends_on:
+      - nginx
+    command: >-
+             certonly --reinstall --webroot --webroot-path=/var/www/certbot
+             --email ${EMAIL} --agree-tos --no-eff-email
+             -d ${DOMAIN}
+    volumes:
+      - ./etc/letsencrypt:/etc/letsencrypt
+      - ./certbot/data:/var/www/certbot
+
+networks:
+  vault_nginx:
+    name: vault_nginx
+    external: true

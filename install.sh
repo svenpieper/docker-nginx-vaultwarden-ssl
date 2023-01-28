@@ -27,19 +27,19 @@ then
     exit 1
 fi
 
-# Asking if vaultwarden will run on a ARM machine.
+# Asking if vaultwarden will run on a Arm machine.
 while true; do
     read -p "Is vaultwarden started on an Arm CPU? (yes/no) " answer
     case $answer in
         [Nn] | [Nn][Oo] )
-            echo "Setting nginx version to non Arm version."
-            # Changing nginx version within docker-compose files
-            sed -i 's/arm64v8\/nginx:latest/nginx:latest/g' docker-compose.yml
-            sed -i 's/arm64v8\/nginx:latest/nginx:latest/g' docker-compose.init.yml
+            echo "Setting certbot version to non Arm version."
+            # Changing certbot version within docker-compose files
+            sed -i 's/certbot\/certbot:arm32v6-latest/certbot\/certbot:latest/g' docker-compose.yml
+            sed -i 's/certbot\/certbot:arm32v6-latest/certbot\/certbot:latest/g' docker-compose.init.yml
             break;;
         [Yy] | [Yy][Ee][Ss] )
             # Using setup as is
-            echo "Using nginx for Arm CPU."
+            echo "Using certbot for Arm CPU."
             break;;
         * )
             echo "Invalid input. Please enter 'yes', 'y', 'no', or 'n'."
@@ -53,7 +53,9 @@ fi
 echo DOMAIN=${DOMAIN} >> .env
 echo EMAIL=${EMAIL} >> .env
 
-exit 0
+# Generating crontab file
+PATH=$(pwd)/etc
+echo "* * * * * sh $PATH/cronjob.sh" > $PATH/crontab
 
 # Phase 1 - Only for generating certs
 docker-compose -f ./docker-compose.init.yml up -d nginx
@@ -67,3 +69,7 @@ openssl dhparam -out etc/letsencrypt/ssl-dhparams.pem 2048
 # Phase 2 - Setting cronjob for auto renew and starting final vaultwarden and nginx instance
 crontab ./etc/crontab
 docker-compose -f ./docker-compose.yml -d up
+
+# Printing crontab reminder
+echo "Finished."
+echo "Please run >crontab ./etc/crontab< to start cronjob for auto renew certs."
