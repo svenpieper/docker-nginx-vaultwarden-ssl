@@ -27,6 +27,7 @@
     <li><a href="#prerequisites">Prerequisites</a></li>
     <li><a href="#installation">Installation</a></li>
     <li><a href="#usage">Usage</a></li>
+    <li><a href="#recommended-settings">Recommended Settings</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#references">References</a></li>
@@ -179,6 +180,26 @@ Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod 
 
 Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
 
+
+<!-- RECOMMENDED SETTINGS -->
+## Recommended settings
+
+Your vaultwarden is up and running and accessible? Great! But I recommend you to change some settings to improve your security a bit or to make the usage more relaxed. Do to so go to the settings within your Bitwarden App installed on your phone.
+
+### Security
+
+- Tresor-Timeout: immediately
+- Action when Tresor Timeout: lock
+- Activate 2FA
+- Clear clipboard: 20 seconds
+
+For the very paranoid: Set `WEB_VAULT_ENABLED` to `false` in the `docker-compose.yml` file and restart the container. This will disable login via a browser. If the subsequent 404 response bugs you, you can also provide your own index.html via `WEB_VAULT_FOLDER`. This will be displayed instead. Make sure you rebuild your container after changing docker environment variables. Just run: `docker-compose up --force-recreate`. While we're at it: Did you set `WEB_VAULT_ENABLED` to `false`? You'd better do it.
+
+### Relaxed stuff
+
+- Activate Fingerprint or FaceID activation for your phone
+- Activate Passwort Autofill
+- Set up available app extensions
 
 <!-- CONTRIBUTING -->
 ## Contributing
