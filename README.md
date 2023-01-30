@@ -166,7 +166,7 @@ This setting will redirect the call to the domain in a browser or similar to the
 
 It is not very common for ISPs to offer a fixed IPv4 address. This means that this address is changed at regular intervals. This can happen, for example, when the router is restarted. This means that the A record at your domain provider is no longer valid and is not routed correctly. Therefore we have to ask regularly for the current IPv4 address and renew it at the domain provider. Many of these providers offer an API for this. 
 
-To automate this process you can for example write your own Python script that sends the required HTTP request in case of a change. You can find a simple example in this repo (`/etc/update_dyndns.py`). For privacy reasons I have commented the crucial function only schematically. Here you have to adapt the HTTP request to the API interface of your domain provider.
+To automate this process you can for example write your own Python script that sends the required HTTP request in case of a change. You can find a simple example in this repo (`/etc/update_dns_record.py`). For privacy reasons I have commented the crucial function only schematically. Here you have to adapt the HTTP request to the API interface of your domain provider.
 
 
 <!-- INSTALLATION -->
@@ -180,6 +180,8 @@ chmod +x install.sh
 ```
 
 After the script finishes without errors you should have access to your self-hosted vaultwarden under `example.domain.de`. Create an account there and remember your master password, this is now your access code to the rest of your secure passwords. At this point you should set the Docker environment variable `SIGNUPS_ALLOWED` to `false` and restart the container. You can do this with `docker-compose up -d`. This means that no more people can now create accounts.
+
+If you don't have a fixed IPv4 address you can check it regularly and change your A record if it changes. Many domain providers offer API interfaces to change them via HTTP GET request. I have provided the `update_dns_record.py` script under `etc/` for this. Here you only have to change the URL and the credentials to your needs. After that you can simply start the python script once in the background. It will check every 6 hours if your address has changed and if the change was successful. The logs for this are stored under `/logs`. Please also make sure that you adjust `CURR_IP`, `HOSTNAME`, `APIKEY` and if necessary `INTERVAL_S` in the Python script.
 
 <!-- USAGE -->
 ## Usage
