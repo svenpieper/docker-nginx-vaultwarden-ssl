@@ -54,21 +54,27 @@ echo DOMAIN=${DOMAIN} >> .env
 echo EMAIL=${EMAIL} >> .env
 
 # Generating crontab file
-PATH=$(pwd)/etc
-echo "* * * * * sh $PATH/cronjob.sh" > $PATH/crontab
+ETC_PATH=$(pwd)/etc
+echo "30 3 * * * sh $ETC_PATH/cronjob.sh" > $ETC_PATH/crontab
+
+# Creating new custom nginx.domain.conf for production server
+nginx_config=$ETC_PATH/nginx/templates/nginx.template.conf
+new_config=nginx.domain.conf
+sed "s/\$domain/$DOMAIN/g" $nginx_config > $ETC_PATH/nginx/$new_config
 
 # Phase 1 - Only for generating certs
-docker-compose -f ./docker-compose.init.yml up -d nginx
-docker-compose -f ./docker-compose.init.yml up certbot
-docker-compose -f ./docker-compose.init.yml down
+/usr/local/bin/docker-compose -f ./docker-compose.init.yml up -d nginx
+/usr/local/bin/docker-compose -f ./docker-compose.init.yml up certbot
+/usr/local/bin/docker-compose -f ./docker-compose.init.yml down
 
 # Some configurations for let's encrypt
-curl -L --create-dirs -o etc/letsencrypt/options-ssl-nginx.conf https://raw.githubusercontent.com/certbot/certbot/master/certbot-nginx/certbot_nginx/_internal/tls_configs/options-ssl-nginx.conf
-openssl dhparam -out etc/letsencrypt/ssl-dhparams.pem 2048
- 
+/usr/bin/curl -L --create-dirs -o etc/letsencrypt/options-ssl-nginx.conf https://raw.githubusercontent.com/certbot/certbot/master/certbot-nginx/certbot_nginx/_internal/tls_configs/options-ssl-nginx.conf
+/usr/bin/openssl dhparam -out etc/letsencrypt/ssl-dhparams.pem 2048
+
 # Phase 2 - Setting cronjob for auto renew and starting final vaultwarden and nginx instance
-crontab ./etc/crontab
-docker-compose -f ./docker-compose.yml -d up
+/usr/bin/crontab ./etc/crontab
+/usr/bin/docker network create -d bridge vault_nginx
+/usr/local/bin/docker-compose -f ./docker-compose.yml up -d
 
 # Printing crontab reminder
 echo "Finished."

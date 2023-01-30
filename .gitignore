@@ -5,3 +5,8 @@ print.sh
 *crontab
 *dyndns.log*
 .vscode
+nginx.domain.conf
+*/letsencrypt/*
+/vw-data/*
+/certbot/data
+!.gitkeep
