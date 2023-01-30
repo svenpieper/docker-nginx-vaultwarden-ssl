@@ -38,7 +38,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About the project
 
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+This repo gives you the possibility to run your own [Bitwarden](https://bitwarden.com/) servers at home or on KVMs. I use the popular Docker image [vaultwarden](https://github.com/dani-garcia/vaultwarden/), a relatively small [docker](https://www.docker.com/) image that even runs on Raspberry Pis with >= 1 GB RAM. All you need is your own domain and a server. If this server is located at home you have to enable portforwarding. More about this in the prerequisites. The setup is very simple: Run the `install.sh` script and the rest is almost done by itself. Since the whole thing is supposed to run over HTTPS, a certificate will be generated via [Lets Encrypt](https://letsencrypt.org/de/) for your domain. As an additional goodie, a cronjob is created on your machine, which checks daily if this certificate is still valid. If not, it will be renewed immediately. Automatically and free of charge. [Nginx](https://www.nginx.com/) serves as reverse proxy.
 
 
 <!-- PREREQUISITES -->
@@ -172,14 +172,19 @@ To automate this process you can for example write your own Python script that s
 <!-- INSTALLATION -->
 ## Installation
 
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+So everything is installed so far? Now it is time to start the stack. For this there is the `install.sh` script in this repo. This automates the whole process from creating an init-server for getting the certificates, creating custom configs, to starting the actual vaultwarden and nginx instance. Finally, a cronjob is created which checks daily if the current certificate is still valid. If not, a new one is generated and loaded into the container. Pretty handy, isn't it? It is important that you pass your domain and email address as parameters to the script. Only then letecrypt can generate your certificates and nginx can be configured correctly. It is important to say here again that you must have already set the A record to your IP address at this point and the port forwarding must be set correctly. But here now the command:
 
+```bash
+chmod +x install.sh
+./install.sh <example.domain.de> <mail@example.de>
+```
+
+After the script finishes without errors you should have access to your self-hosted vaultwarden under `example.domain.de`. Create an account there and remember your master password, this is now your access code to the rest of your secure passwords. At this point you should set the Docker environment variable `SIGNUPS_ALLOWED` to `false` and restart the container. You can do this with `docker-compose up -d`. This means that no more people can now create accounts.
 
 <!-- USAGE -->
 ## Usage
 
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-
+Visit `example.domain.de`, log in with your password and enjoy your own vaultwarden. Of course, you can also use the [Bitwarden](https://bitwarden.com/de-DE/) [Apps](https://bitwarden.com/de-DE/download/) for Windows, Linux, iOS, Android or Mac to access it on the go without having to use the browser. However, you must refer to your own custom server. To do this, before you log in to the app, go to the settings screen and set the server url to your own domain, `https://example.domain.de`. After that you can log in as usual.
 
 <!-- RECOMMENDED SETTINGS -->
 ## Recommended settings
@@ -228,4 +233,5 @@ Distributed under the GNU General Public License. See `LICENSE` for more informa
 - [vaultwarden](https://github.com/dani-garcia/vaultwarden/)
 - [nginx](https://www.nginx.com/)
 - [docker](https://www.docker.com/)
+- [Lets Encrypt](https://letsencrypt.org/de/)
 
